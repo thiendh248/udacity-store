@@ -1,0 +1,74 @@
+<div style="height: 150px; width: 100%; background-color: #02b3e4; display: flex; color: white">
+    <div style="display: flex; flex-direction: column;justify-content: center; align-items: center; width: 100%">
+      <h1>My Store</h1>
+      <div style="display: flex">
+        <h2 style="padding-right: 10px; border-right: 1px solid #fff; cursor: pointer" routerLink="/">Product List</h2>
+        <h2 style="padding-left: 10px; cursor: pointer" routerLink="/cart">Card
+          <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+        </h2>
+      </div>
+    </div>
+  </div>
+  
+  <div style="margin-top: 40px; display: flex; justify-content: center" *ngIf="dataCart.length > 0">
+    <div style="display: block;">
+      <div style="display: flex !important; margin-bottom: 10px" *ngFor="let cart of dataCart">
+        <img [src]="cart.url" alt="" style="width: 100px; height: 150px; border-radius: 5px; margin-right: 20px">
+        <div style="display: flex !important; flex-direction: column !important;">
+          <span>{{cart.name}}</span>
+          <span style="padding: 10px 0">{{cart.price}}</span>
+          <span style="display: flex; align-items: center; justify-content: center">Amount: <input type="number" [min]="1" [value]="cart.amount" id="typeNumber" oninput="validity.valid||(value='');" class="form-control" style="width: 100px; margin-left: 10px" (change)="changeAmount($event.target, cart)"/></span>
+          <button style="margin-top: 10px; width: 100px" type="button" class="btn btn-danger" (click)="delete(cart.id)">Delete</button>
+        </div>
+      </div>
+      <h2>Total: {{total}}</h2>
+    </div>
+    <form style="margin-left: 100px" #frmInfo = "ngForm" (ngSubmit)="submit(frmInfo.value)">
+      <div style="display: flex; flex-direction: column; margin-bottom: 10px">
+        <span style="margin-bottom: 5px" >Full Name</span>
+        <input type="text" class="form-control" minlength="6" maxlength="32" #name="ngModel" name="fullName" ngModel required [ngModel] = "fullName" (ngModelChange)="changeName($event)" placeholder="Full Name"/>
+        <div *ngIf = "(name.touched || name.dirty) && name.errors" >
+          <p *ngIf="name.errors?.['required']" class="text-danger">Full name is required</p>
+          <p *ngIf = "name.errors?.['minlength'] || name.errors?.['maxlength']" class="text-danger">Full name from 6 - 32 character</p>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; margin-bottom: 10px">
+        <span style="margin-bottom: 5px">Address</span>
+        <input type="text" class="form-control" minlength="6" maxlength="250" #add="ngModel" name="address" ngModel required [ngModel] = "address" (ngModelChange)="changeAddress($event)" placeholder="Address"/>
+        <div *ngIf = "(add.touched || add.dirty) && add.errors" >
+          <p *ngIf="add.errors?.['required']" class="text-danger">Address is required</p>
+          <p *ngIf = "add.errors?.['minlength'] || add.errors?.['maxlength']" class="text-danger">Address from 6 - 250 character</p>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; margin-bottom: 10px">
+        <span style="margin-bottom: 5px" >Credit Card Number</span>
+        <input
+          type="number"
+          class="form-control"
+          [min]="1000000000000000"
+          [max]="9999999999999999"
+          inputmode="numeric"
+          placeholder="XXXX-XXXX-XXXX-XXXX"
+          (ngModelChange)="changeCard($event)"
+          pattern="^\d+$"
+          minlength="16"
+          maxlength="16"
+          #card="ngModel"
+          name="creditCard"
+          ngModel required [ngModel] = "creditCard"
+        />
+        <div *ngIf = "(card.touched || card.dirty) && card.errors" >
+          <p *ngIf=  "card.errors?.['required']"  class="text-danger">Credit is required</p>
+          <p *ngIf = "card.errors?.['min'] || card.errors?.['max']" class="text-danger">Credit card must be at least 16 characters long</p>
+        </div>
+      </div>
+      <div style="margin-bottom: 10px">We'll never share your payment details with anyone else</div>
+      <button type="button" class="btn btn-primary" [disabled] = "frmInfo.invalid || frmInfo.submitted" type='submit'>Submit</button>
+    </form>
+  </div>
+  
+  <div *ngIf="dataCart.length === 0" style="margin-top: 40px; display: flex; justify-content: center; flex-direction: column; align-items: center">
+     <h1 style="color: red">No product in my cart!</h1>
+    <button style="width: 200px; margin-top: 20px" type="button" class="btn btn-primary" routerLink="/">Back to product list</button>
+  </div>
+  
